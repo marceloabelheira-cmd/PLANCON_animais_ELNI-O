@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANCON Animais — Defesa Civil RJ</title>
+<style>
+  :root{
+    --blue-900:#0b2545;
+    --blue-800:#0f2f57;
+    --blue-700:#16406f;
+    --blue-600:#1c5490;
+    --blue-100:#e8eff8;
+    --orange-600:#d9530a;
+    --orange-500:#f2760c;
+    --orange-100:#fdece0;
+    --gray-50:#f7f8fa;
+    --gray-100:#eef0f3;
+    --gray-200:#e1e5eb;
+    --gray-400:#9aa4b2;
+    --gray-600:#5b6572;
+    --gray-800:#2b323c;
+    --white:#ffffff;
+    --lvl0:#4c7a5e;
+    --lvl0-bg:#e7f1eb;
+    --lvl1:#b8860a;
+    --lvl1-bg:#fbf1d9;
+    --lvl2:#d9530a;
+    --lvl2-bg:#fdece0;
+    --lvl3:#b8271f;
+    --lvl3-bg:#faeae9;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(11,37,69,.06), 0 6px 20px rgba(11,37,69,.08);
+    --shadow-hover: 0 2px 4px rgba(11,37,69,.08), 0 12px 28px rgba(11,37,69,.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  svg{ fill:none; stroke:currentColor; }
+  body{
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height:100vh;
+  }
+  .topbar{
+    background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+    color: var(--white);
+    padding: 18px 24px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    position: sticky;
+    top:0;
+    z-index: 20;
+    box-shadow: 0 2px 10px rgba(11,37,69,.25);
+  }
+  .topbar .badge{
+    width:44px;height:44px;border-radius:50%;
+    background: var(--orange-500);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.35);
+  }
+  .topbar .badge svg{width:24px;height:24px;stroke:white;fill:none;}
+  .topbar-text .eyebrow{
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--orange-100); opacity:.9; font-weight:600;
+  }
+  .topbar-text h1{
+    font-size:16px; margin:2px 0 0; font-weight:700; letter-spacing:.01em;
+  }
+  .breadcrumb{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 14px 24px 0;
+    font-size:13px;
+    color: var(--gray-600);
+    display:flex; align-items:center; flex-wrap:wrap; gap:6px;
+  }
+  .breadcrumb .crumb{cursor:pointer; color:var(--blue-600);}
+  .breadcrumb .crumb:hover{text-decoration:underline;}
+  .breadcrumb .crumb.current{color:var(--gray-800); font-weight:600; cursor:default;}
+  .breadcrumb .crumb.current:hover{text-decoration:none;}
+  .breadcrumb .sep{color:var(--gray-400);}
+
+  .backbar{
+    max-width: 980px;
+    margin: 10px auto 0;
+    padding: 0 24px;
+  }
+  .backbtn{
+    display:inline-flex; align-items:center; gap:6px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    color: var(--blue-700);
+    font-weight:600;
+    font-size:13.5px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor:pointer;
+    box-shadow: var(--shadow);
+    transition: all .15s ease;
+  }
+  .backbtn:hover{ background: var(--blue-100); border-color:var(--blue-600); }
+  .backbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;}
+  .backbtn:disabled{opacity:0; pointer-events:none;}
+
+  main{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 18px 24px 64px;
+  }
+  .screen{ display:none; animation: fadein .25s ease; }
+  .screen.active{ display:block; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .hero{
+    text-align:center;
+    padding: 28px 10px 8px;
+  }
+  .hero .kicker{
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--orange-100); color: var(--orange-600);
+    font-weight:700; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:6px 14px; border-radius:999px; margin-bottom:16px;
+  }
+  .hero h2{
+    font-size: 26px; color: var(--blue-900); margin: 0 0 8px; font-weight:800;
+    letter-spacing:-0.01em;
+  }
+  .hero p.sub{
+    color: var(--gray-600); font-size:15px; max-width:560px; margin: 0 auto;
+    line-height:1.55;
+  }
+
+  .section-title{
+    font-size: 20px; color: var(--blue-900); font-weight:800; margin: 4px 0 4px;
+  }
+  .section-desc{ color: var(--gray-600); font-size:14.5px; line-height:1.6; margin: 0 0 22px; }
+
+  .grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+    gap:16px; margin-top: 18px;
+  }
+  .grid.tight{ grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); }
+
+  .card{
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor:pointer;
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    display:flex; flex-direction:column; gap:10px;
+    text-align:left;
+  }
+  .card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--blue-600); }
+  .card .icon{
+    width:42px;height:42px;border-radius:11px;
+    background: var(--blue-100); color: var(--blue-700);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card .icon svg{width:22px;height:22px;stroke:currentColor;fill:none;}
+  .card.orange .icon{ background: var(--orange-100); color: var(--orange-600); }
+  .card h3{ margin:0; font-size:15.5px; color:var(--blue-900); font-weight:700; line-height:1.35; }
+  .card p{ margin:0; font-size:13px; color:var(--gray-600); line-height:1.5; }
+  .card .go{
+    margin-top:auto; display:flex; align-items:center; gap:5px;
+    color: var(--blue-600); font-size:12.5px; font-weight:700;
+  }
+  .card .go svg{width:12px;height:12px;stroke:currentColor;fill:none;}
+
+  .home-card{ padding:26px 20px; }
+  .home-card .icon{ width:52px;height:52px;border-radius:13px; }
+  .home-card .icon svg{width:26px;height:26px;}
+  .home-card h3{ font-size:16.5px; }
+
+  /* level badge cards */
+  .lvl-card{ border-left: 6px solid var(--gray-400); }
+  .lvl-card[data-lvl="0"]{ border-left-color: var(--lvl0); }
+  .lvl-card[data-lvl="1"]{ border-left-color: var(--lvl1); }
+  .lvl-card[data-lvl="2"]{ border-left-color: var(--lvl2); }
+  .lvl-card[data-lvl="3"]{ border-left-color: var(--lvl3); }
+  .lvl-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11.5px; font-weight:800; letter-spacing:.04em;
+    padding:4px 10px; border-radius:999px; width:fit-content;
+  }
+  .lvl-pill[data-lvl="0"]{ background:var(--lvl0-bg); color:var(--lvl0); }
+  .lvl-pill[data-lvl="1"]{ background:var(--lvl1-bg); color:var(--lvl1); }
+  .lvl-pill[data-lvl="2"]{ background:var(--lvl2-bg); color:var(--lvl2); }
+  .lvl-pill[data-lvl="3"]{ background:var(--lvl3-bg); color:var(--lvl3); }
+
+  .lvl-banner{
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom:22px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .lvl-banner[data-lvl="0"]{ background:var(--lvl0-bg); }
+  .lvl-banner[data-lvl="1"]{ background:var(--lvl1-bg); }
+  .lvl-banner[data-lvl="2"]{ background:var(--lvl2-bg); }
+  .lvl-banner[data-lvl="3"]{ background:var(--lvl3-bg); }
+  .lvl-banner h3{ margin:0; font-size:17px; font-weight:800; }
+  .lvl-banner[data-lvl="0"] h3{ color:var(--lvl0); }
+  .lvl-banner[data-lvl="1"] h3{ color:var(--lvl1); }
+  .lvl-banner[data-lvl="2"] h3{ color:var(--lvl2); }
+  .lvl-banner[data-lvl="3"] h3{ color:var(--lvl3); }
+  .lvl-banner p{ margin:0; font-size:14px; color:var(--gray-800); line-height:1.55; }
+
+  .panel{
+    background: var(--white);
+    border:1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .panel h4{
+    margin: 0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:.06em;
+    color: var(--blue-700); font-weight:800;
+  }
+  .panel p{ font-size:14.5px; line-height:1.65; color: var(--gray-800); margin:0 0 10px; }
+  ul.bullets{ margin:0; padding-left: 20px; }
+  ul.bullets li{ font-size:14.5px; line-height:1.65; color: var(--gray-800); margin-bottom:8px; }
+  ul.bullets li::marker{ color: var(--orange-600); }
+  ol.steps{ margin:0; padding-left: 22px; }
+  ol.steps li{ font-size:14.5px; line-height:1.65; color: var(--gray-800); margin-bottom:10px; }
+  ol.steps li::marker{ color: var(--blue-600); font-weight:700; }
+
+  .flow{
+    display:flex; flex-direction:column; gap:0;
+  }
+  .flow-step{
+    display:flex; align-items:flex-start; gap:14px;
+  }
+  .flow-num{
+    width:30px;height:30px;border-radius:50%;
+    background: var(--blue-700); color:white; font-weight:800; font-size:13px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .flow-line{
+    width:2px; flex:1; background: var(--gray-200); margin: 4px 0 4px 14px;
+    min-height:22px;
+  }
+  .flow-body{ padding-bottom: 18px; padding-top:2px; }
+  .flow-body p{ margin:0; font-size:14.5px; color:var(--gray-800); line-height:1.5; font-weight:600; }
+
+  footer{
+    text-align:center; color: var(--gray-400); font-size:12px; padding: 20px 24px 40px;
+  }
+
+  .chiplist{
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr));
+    gap:10px;
+  }
+  .chip{
+    display:flex; align-items:flex-start; gap:10px;
+    background: var(--gray-50); border:1px solid var(--gray-200);
+    border-radius:10px; padding:11px 13px;
+  }
+  .chip .chip-badge{
+    width:22px;height:22px;border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;
+    font-size:11px; line-height:1; font-weight:800; color:white; background: var(--blue-700);
+  }
+  .chip-badge.check{ background: var(--orange-500); }
+  .chip-badge svg{ width:12px;height:12px; stroke:white; }
+  .chip .chip-label{ font-size:13.5px; line-height:1.45; color: var(--gray-800); }
+
+  @media (max-width:560px){
+    .topbar h1{ font-size:14px; }
+    .hero h2{ font-size:21px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="badge">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 9 4.6-.3 8-4 8-9V5l-8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+  </div>
+  <div class="topbar-text">
+    <div class="eyebrow">Defesa Civil · Estado do Rio de Janeiro</div>
+    <h1>Plano de Contingência para Animais — Resumo Prático</h1>
+  </div>
+</div>
+
+<div class="breadcrumb" id="breadcrumb"></div>
+<div class="backbar"><button class="backbtn" id="backBtn" onclick="goBack()">
+  <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  voltar
+</button></div>
+
+<main id="main"></main>
+
+<footer>PLANCON Animais RJ · versão preliminar em desenvolvimento</footer>
+
+<script>
+/* ---------- Ícones ---------- */
+const ICONS = {
+  home: `<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>`,
+  scenario: `<path d="M4 19h16"/><path d="M6 19V9l4-4 4 4v10"/><path d="M14 19v-6l4-3 2 2v7"/>`,
+  mobil: `<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>`,
+  org: `<rect x="4" y="10" width="16" height="10" rx="1"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/>`,
+  chevron: `<path d="M9 6l6 6-6 6"/>`,
+  flood: `<path d="M3 16c1.5 1.5 3 1.5 4.5 0s3-1.5 4.5 0 3 1.5 4.5 0 3-1.5 4.5 0"/><path d="M12 3v9"/><path d="M8.5 8.5 12 12l3.5-3.5"/>`,
+  alert: `<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/>`,
+  flow: `<circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6h6a4 4 0 0 1 4 4v4"/>`,
+  levels: `<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20v-3"/>`,
+  shield: `<path d="M12 2 4 5v6c0 5 3.4 8.7 8 9 4.6-.3 8-4 8-9V5l-8-3z"/>`,
+  mountain: `<path d="M3 20 9 8l4 7 3-4 5 9z"/><path d="M11.5 13.5 9.5 16.5"/>`,
+  clipboard: `<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 18h3"/>`,
+  layers: `<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>`,
+  cross: `<path d="M12 3v18M3 12h18"/>`,
+  paw: `<circle cx="7" cy="8" r="1.8"/><circle cx="12" cy="5.5" r="1.8"/><circle cx="17" cy="8" r="1.8"/><ellipse cx="12" cy="15" rx="5" ry="4"/>`,
+  leaf: `<path d="M5 21c0-9 5-16 15-16-1 10-6 15-15 16z"/><path d="M9.5 15.5 18 7"/>`,
+  city: `<rect x="3" y="10" width="6" height="11"/><rect x="11" y="4" width="10" height="17"/><path d="M14 8h2M14 12h2M14 16h2"/>`,
+  check: `<path d="M5 12.5 10 17 19 7"/>`,
+};
+function icon(name){ return `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`; }
+
+/* ---------- Conteúdo (extraído do PLANCON_para.site.xlsx) ---------- */
+
+/* Metadados de exibição (ícone/cor) por cenário e por órgão — a ordem aqui define a ordem dos cards */
+const CENARIOS_META = {
+  1: { icon: 'flood',    cardClass: '' },
+  2: { icon: 'mountain', cardClass: 'orange' }
+};
+const ORGS_META = {
+  sedec:    { icon: 'org',   cardClass: '' },
+  dcms:     { icon: 'city',  cardClass: 'orange' },
+  saude:    { icon: 'cross', cardClass: '' },
+  bemestar: { icon: 'paw',   cardClass: 'orange' },
+  seappadi: { icon: 'leaf',  cardClass: '' }
+};
+
+const DATA = {
+  atribIntro: {
+    lead: "Uma vez ativado o GRAC Animal do PLANCON Estadual, os órgãos participantes deverão atuar de maneira integrada à estrutura de comando estabelecida pela SEDEC-RJ.",
+    subLead: "Cada órgão deverá:",
+    bullets: [
+      "designar representante com capacidade de decisão;",
+      "manter cadastro atualizado de pontos focais;",
+      "estabelecer plano de chamada;",
+      "indicar recursos humanos e materiais disponíveis;",
+      "manter capacidade de mobilização compatível com suas competências;",
+      "executar as atividades previstas na Matriz de Responsabilidades."
+    ]
+  },
+
+  orgs: {
+    sedec: {
+      org: "SECRETARIA DE ESTADO DE DEFESA CIVIL – SEDEC-RJ / CBMERJ",
+      short: "SEDEC-RJ / CBMERJ",
+      heading: "Competências no componente animal",
+      bullets: [
+        "coordenar o GRAC Animal dentro da estrutura estadual de resposta;",
+        "integrar as ações animais ao SCI;",
+        "receber e avaliar solicitações de apoio dos municípios;",
+        "mobilizar recursos estaduais necessários;",
+        "coordenar, no âmbito das operações de salvamento, as ações de busca e resgate;",
+        "estabelecer zoneamento operacional e segurança das equipes;",
+        "organizar o fluxo operacional das equipes de resgate animal;",
+        "integrar os dados animais à avaliação geral de danos;",
+        "articular as REDECs e Defesas Civis municipais;",
+        "solicitar apoio complementar quando a capacidade estadual for excedida;",
+        "coordenar exercícios simulados e capacitações em gestão de animais em desastres."
+      ]
+    },
+    dcms: {
+      org: "DEFESAS CIVIS MUNICIPAIS",
+      short: "Defesas Civis Municipais",
+      heading: null,
+      bullets: [
+        "realizar avaliação inicial da situação;",
+        "identificar número estimado e espécies de animais afetados;",
+        "acionar estruturas municipais responsáveis;",
+        "solicitar apoio estadual quando a capacidade local for excedida;",
+        "identificar locais para instalação de estruturas temporárias;",
+        "manter cadastro de recursos locais;",
+        "estabelecer comunicação com responsáveis pelos animais;",
+        "incluir o componente animal no PLANCON Municipal;",
+        "registrar dados das ocorrências e fornecer informações ao Estado."
+      ]
+    },
+    saude: {
+      org: "SECRETARIA DE ESTADO DE SAÚDE",
+      short: "Secretaria de Estado de Saúde",
+      heading: "Competências",
+      bullets: [
+        "coordenar vigilância epidemiológica relacionada às zoonoses em cenários de desastre;",
+        "apoiar protocolos de biossegurança;",
+        "avaliar riscos sanitários nos abrigos temporários;",
+        "integrar informações de Saúde Única;",
+        "apoiar investigações epidemiológicas;",
+        "orientar medidas relacionadas a leptospirose, raiva, esporotricose e demais agravos de interesse;",
+        "apoiar ações de controle de vetores;",
+        "estabelecer fluxos de comunicação entre vigilâncias municipal e estadual;",
+        "participar das decisões relacionadas a riscos sanitários decorrentes de cadáveres animais."
+      ]
+    },
+    bemestar: {
+      org: "BEM-ESTAR ANIMAL",
+      short: "Bem-Estar Animal",
+      heading: "Competências",
+      intro: "À Secretaria ou órgão estadual/municipal responsável pela Proteção e Bem-Estar Animal caberá, dentro de suas competências institucionais:",
+      bullets: [
+        "atuar prioritariamente nas ações referentes aos animais de companhia, animais comunitários e animais errantes afetados pelo desastre;",
+        "manter cadastro atualizado de abrigos, protetores, organizações da sociedade civil, clínicas, hospitais veterinários e demais estruturas de apoio existentes no território;",
+        "apoiar a identificação e o dimensionamento da população animal afetada;",
+        "auxiliar na identificação dos responsáveis pelos animais resgatados;",
+        "organizar, em conjunto com a Defesa Civil e demais órgãos envolvidos, o fluxo de recepção, cadastramento, identificação e rastreabilidade dos animais;",
+        "apoiar a implantação, organização e funcionamento dos abrigos temporários destinados aos animais;",
+        "garantir que os abrigos temporários adotem critérios mínimos de bem-estar animal, biossegurança, higiene, alimentação, dessedentação e manejo;",
+        "providenciar ou articular recursos humanos destinados ao manejo diário dos animais nos abrigos;",
+        "apoiar a separação dos animais por espécie, condição clínica, comportamento e situação sanitária;",
+        "organizar ações destinadas à reunificação dos animais com seus responsáveis;",
+        "manter registro fotográfico e individual dos animais acolhidos, sempre que possível;",
+        "apoiar ações relacionadas aos animais comunitários e errantes encontrados nas áreas afetadas;",
+        "organizar, quando necessário, programas emergenciais de lar temporário;",
+        "coordenar, juntamente com a comunicação oficial da operação, campanhas de localização de responsáveis por animais resgatados;",
+        "apoiar processos de adoção responsável somente após esgotadas as possibilidades razoáveis de identificação ou localização do responsável e observadas as normas aplicáveis;",
+        "apoiar a captação, recebimento, triagem, armazenamento e distribuição de ração, medicamentos, equipamentos e demais insumos destinados aos animais;",
+        "manter controle sobre doações destinadas especificamente à assistência animal;",
+        "apoiar ações educativas destinadas aos responsáveis pelos animais antes, durante e após o desastre;",
+        "colaborar com o levantamento dos animais desaparecidos;",
+        "comunicar aos órgãos competentes situações identificadas de abandono, maus-tratos ou outras possíveis infrações;",
+        "disponibilizar representante técnico para integrar a estrutura de coordenação do componente animal quando solicitado."
+      ]
+    },
+    seappadi: {
+      org: "SECRETARIA DE ESTADO DE AGRICULTURA, PECUÁRIA, PESCA, ABASTECIMENTO E DESENVOLVIMENTO DO INTERIOR – SEAPPADI",
+      short: "SEAPPADI",
+      heading: "Competências",
+      bullets: [
+        "coordenar as ações relativas aos animais de produção;",
+        "atuar na defesa sanitária animal;",
+        "apoiar levantamento das propriedades rurais atingidas;",
+        "avaliar situação sanitária dos rebanhos;",
+        "apoiar medidas de evacuação de animais de produção;",
+        "orientar produtores rurais;",
+        "monitorar riscos de doenças de notificação obrigatória;",
+        "apoiar logística de alimentação e dessedentação emergencial de rebanhos;",
+        "orientar movimentação e transporte animal quando houver restrições sanitárias;",
+        "avaliar impactos sobre a produção agropecuária;",
+        "articular apoio aos produtores afetados."
+      ]
+    }
+  },
+
+  cenarios: {
+    1: {
+      nome: "Inundações, enxurradas e alagamentos",
+      titulo: "CENÁRIO 1 — Inundações, Enxurradas e Alagamentos",
+      descricao: "Eventos hidrológicos decorrentes de chuvas intensas podem provocar rápida elevação de cursos d'água, inundação de áreas urbanas e rurais, isolamento de propriedades, arraste de animais, comprometimento de instalações pecuárias, canis, gatis, criadouros e abrigos, além do deslocamento de fauna silvestre.",
+      impactos: [
+        "animais ilhados em residências, telhados, propriedades rurais, canis, currais, baias ou estruturas parcialmente submersas;",
+        "afogamentos e óbitos;",
+        "hipotermia, traumas, ferimentos e exaustão;",
+        "separação entre animais e seus responsáveis;",
+        "fuga e dispersão de animais;",
+        "dificuldade de fornecimento de água e alimentação;",
+        "comprometimento de instalações destinadas à criação e alojamento;",
+        "contaminação da água e alimentos;",
+        "aumento do risco de leptospirose e outras doenças relacionadas à inundação;",
+        "deslocamento da fauna silvestre para áreas urbanizadas;",
+        "necessidade de implantação de abrigos temporários para animais;",
+        "formação de áreas com concentração de animais resgatados;",
+        "necessidade de manejo e destinação adequada de cadáveres animais."
+      ],
+      prepara: [
+        "identificar previamente municípios e áreas com histórico de inundação onde exista concentração significativa de animais;",
+        "estimular o cadastramento municipal de propriedades rurais, abrigos, canis, gatis, haras, criatórios e estabelecimentos com grande concentração animal;",
+        "identificar locais seguros para implantação de abrigos temporários para animais;",
+        "cadastrar veículos apropriados ao transporte de pequenos e grandes animais;",
+        "cadastrar profissionais e equipes capacitadas em resgate técnico animal;",
+        "manter equipamentos de captura, contenção, transporte, atendimento veterinário e resgate aquático disponíveis;",
+        "orientar responsáveis para inclusão dos animais nos planos familiares de emergência;",
+        "fomentar a preparação da Mochila de Emergência Pet;",
+        "orientar produtores rurais para definição de rotas e áreas elevadas destinadas à evacuação preventiva dos rebanhos;",
+        "estabelecer fluxos para atendimento veterinário e encaminhamento dos animais;",
+        "estabelecer previamente fluxos para fauna silvestre junto aos órgãos ambientais competentes;",
+        "manter estoques estratégicos ou fontes previamente identificadas de ração, feno, água, medicamentos, caixas de transporte, cercamento móvel e materiais de abrigo;",
+        "capacitar os municípios para inclusão do componente animal em seus PLANCONs."
+      ],
+      gatilhosIntro: "O GRAC Animal poderá ser ativado diante de um ou mais dos seguintes indicadores:",
+      gatilhos: [
+        "emissão de alerta hidrológico de nível elevado ou muito elevado;",
+        "previsão ou ocorrência de inundação/enxurrada atingindo áreas habitadas ou rurais com presença de animais;",
+        "solicitação formal de apoio pelo município afetado;",
+        "registro de animais ilhados ou impossibilitados de evacuação;",
+        "necessidade de retirada preventiva de rebanhos;",
+        "ocorrência simultânea de múltiplas solicitações de resgate animal;",
+        "necessidade de instalação de abrigo temporário para animais;",
+        "comprometimento da capacidade municipal de resposta;",
+        "necessidade de emprego de equipe especializada ou de recursos estaduais."
+      ],
+      resposta: [
+        "ativar a coordenação do componente animal no SCI;",
+        "realizar levantamento inicial da população animal afetada;",
+        "estabelecer prioridades operacionais conforme risco à vida, segurança das equipes e acessibilidade;",
+        "realizar busca e resgate técnico dos animais;",
+        "realizar triagem e atendimento pré-hospitalar veterinário;",
+        "estabelecer Posto Médico-Veterinário quando necessário;",
+        "estabelecer Base de Resgate de Fauna quando necessário;",
+        "realizar transporte seguro dos animais;",
+        "implantar abrigos temporários para animais quando necessário;",
+        "garantir identificação, registro e rastreabilidade dos animais resgatados;",
+        "promover reunificação com seus responsáveis;",
+        "fornecer água, alimentação, assistência veterinária e manejo adequado;",
+        "implantar vigilância epidemiológica e medidas de biossegurança;",
+        "providenciar destinação adequada dos cadáveres;",
+        "registrar quantitativos, atendimentos, óbitos, destinações e demais indicadores da operação."
+      ]
+    },
+    2: {
+      nome: "Deslizamentos, movimentos de massa e colapso de estruturas",
+      titulo: "CENÁRIO 2 — Deslizamentos, Movimentos de Massa e Colapso de Estruturas",
+      descricao: "Chuvas intensas e prolongadas podem provocar movimentos de massa, deslizamentos, queda de blocos e colapso de estruturas, atingindo residências, propriedades, estabelecimentos e demais áreas onde existam animais.",
+      impactos: [
+        "animais soterrados ou presos em escombros;",
+        "traumatismos, esmagamentos, fraturas e hemorragias;",
+        "impossibilidade de acesso imediato às áreas atingidas;",
+        "separação entre responsáveis e animais;",
+        "fuga e dispersão de animais;",
+        "animais presos em edificações interditadas;",
+        "deslocamento de fauna;",
+        "necessidade de operações técnicas de busca e resgate em estruturas instáveis."
+      ],
+      prepara: [
+        "capacitar equipes de resgate técnico animal para atuação integrada às equipes de primeira resposta;",
+        "disponibilizar equipamentos de localização e inspeção;",
+        "estabelecer protocolos de segurança para acesso à zona quente;",
+        "cadastrar equipamentos de contenção, içamento e transporte;",
+        "planejar suporte veterinário para animais politraumatizados;",
+        "estabelecer rede de hospitais e clínicas veterinárias de referência;",
+        "planejar locais de concentração e triagem dos animais retirados."
+      ],
+      gatilhos: [
+        "ocorrência confirmada de movimento de massa com edificações atingidas;",
+        "indicação ou confirmação de presença de animais em estruturas colapsadas;",
+        "solicitação do Comando do Incidente;",
+        "ocorrência com múltiplos animais afetados;",
+        "necessidade de equipe especializada para busca e resgate animal."
+      ],
+      resposta: [
+        "integrar o GRAC Animal ao SCI;",
+        "realizar avaliação de risco antes da entrada das equipes;",
+        "somente permitir acesso à zona quente mediante autorização do Comando do Incidente;",
+        "executar busca técnica e localização dos animais;",
+        "realizar estabilização e retirada técnica;",
+        "realizar triagem e APH veterinário;",
+        "transportar os animais conforme classificação de gravidade;",
+        "estabelecer rastreabilidade e reunificação;",
+        "acionar atendimento veterinário especializado quando necessário."
+      ]
+    }
+  },
+
+  mobDimensionamento: {
+    intro: "O levantamento inicial deverá, sempre que possível, identificar:",
+    itens: [
+      "número estimado de animais afetados;",
+      "espécies envolvidas;",
+      "animais resgatados;",
+      "animais feridos;",
+      "animais hospitalizados;",
+      "animais desalojados;",
+      "animais desaparecidos;",
+      "animais mortos;",
+      "animais reunificados com seus responsáveis;",
+      "animais encaminhados a abrigos;",
+      "animais de produção afetados;",
+      "propriedades rurais atingidas;",
+      "fauna silvestre resgatada;",
+      "necessidade de alimentação e água;",
+      "necessidade de estruturas de abrigamento;",
+      "necessidade de atendimento veterinário;",
+      "necessidade de transporte;",
+      "riscos sanitários identificados."
+    ]
+  },
+
+  mobSci: {
+    intro: "De acordo com a magnitude da operação, poderão ser estabelecidas:",
+    itens: [
+      "1. Posto de Comando;",
+      "2. Zona Quente;",
+      "3. Zona Morna;",
+      "4. Zona Fria;",
+      "5. Área de Espera das Equipes;",
+      "6. Base de Resgate de Fauna;",
+      "7. Posto Médico-Veterinário;",
+      "8. Hospital Veterinário de Campanha;",
+      "9. Área de triagem animal;",
+      "10. Área para transporte e embarque;",
+      "11. Abrigo Temporário para Animais;",
+      "12. Área de manejo de grandes animais;",
+      "13. Área de isolamento sanitário;",
+      "14. Área destinada temporariamente aos óbitos animais;",
+      "15. Centro de recebimento e distribuição de insumos destinados aos animais."
+    ]
+  },
+
+  mobAtivacao: {
+    intro: "O GRAC Animal poderá ser ativado quando:",
+    itens: [
+      "houver risco iminente ou ocorrência de desastre com impacto significativo sobre animais;",
+      "houver necessidade de resgate técnico especializado;",
+      "houver necessidade de evacuação de animais;",
+      "houver necessidade de instalação de estruturas temporárias para atendimento ou abrigamento;",
+      "houver múltiplos animais feridos, desalojados, perdidos ou mortos;",
+      "houver comprometimento da capacidade de resposta municipal;",
+      "houver solicitação formal de apoio estadual;",
+      "houver risco relevante envolvendo fauna silvestre;",
+      "houver risco sanitário ou epidemiológico relacionado aos animais;",
+      "o Comando do Incidente considerar necessária a ativação do componente animal."
+    ]
+  },
+  mobFluxo: [
+    "Monitoramento / Alerta",
+    "SEDEC-RJ / CESTAD",
+    "Avaliação da ocorrência",
+    "Município afetado / REDEC",
+    "Identificação de impacto sobre animais",
+    "Comunicação ao Comando do Incidente",
+    "Ativação da Coordenação do GRAC Animal",
+    "Mobilização dos órgãos e equipes previstos na Matriz de Responsabilidades",
+    "Emprego operacional"
+  ],
+  niveis: {
+    0: {
+      nome: "NÍVEL 0 — Normalidade",
+      resumo: "Não há ocorrência significativa.",
+      acoes: [
+        "monitoramento;",
+        "capacitação;",
+        "atualização de cadastros;",
+        "manutenção de equipamentos;",
+        "exercícios simulados;",
+        "elaboração e atualização dos planos municipais."
+      ]
+    },
+    1: {
+      nome: "NÍVEL 1 — Atenção / Mobilização Preventiva",
+      resumo: "Há previsão de evento adverso com possibilidade de impacto sobre animais.",
+      acoes: [
+        "alerta aos municípios;",
+        "levantamento de disponibilidade de equipes;",
+        "conferência de equipamentos;",
+        "contato preventivo com órgãos parceiros;",
+        "preparação logística;",
+        "possibilidade de evacuação preventiva."
+      ]
+    },
+    2: {
+      nome: "NÍVEL 2 — Mobilização Parcial",
+      resumo: "Há ocorrência com animais afetados, porém ainda com capacidade de resposta regional ou municipal apoiada por recursos estaduais.",
+      acoes: [
+        "ativação da coordenação animal;",
+        "mobilização de equipes especializadas;",
+        "ativação dos fluxos de resgate e assistência veterinária;",
+        "preparação ou implantação de estruturas temporárias;",
+        "reforço logístico."
+      ]
+    },
+    3: {
+      nome: "NÍVEL 3 — Mobilização Total",
+      resumo: "Ocorrência de grande magnitude, múltiplos municípios atingidos, elevado número de animais afetados ou perda significativa da capacidade local de resposta.",
+      acoes: [
+        "emprego integral da estrutura prevista;",
+        "estabelecimento de Comando/GRAC Animal dentro do SCI;",
+        "mobilização interinstitucional;",
+        "solicitação de apoio complementar;",
+        "implantação de bases veterinárias e estruturas de campanha;",
+        "reforço de transporte, logística, alimentação e medicamentos;",
+        "mobilização de recursos de outras regiões."
+      ]
+    }
+  }
+};
+
+/* ---------- Motor de telas (replica a lógica "1 aba = 1 tela" da planilha) ---------- */
+let stack = ["home"];
+
+function bullets(arr){ return `<ul class="bullets">${arr.map(t=>`<li>${t}</li>`).join('')}</ul>`; }
+
+function chipList(items, opts={}){
+  const numbered = !!opts.numbered;
+  return `<div class="chiplist">${items.map((raw,i)=>{
+    const label = raw.replace(/^\d+\.\s*/,'').replace(/[;.]\s*$/,'');
+    const badge = numbered ? `<span class="chip-badge">${i+1}</span>` : `<span class="chip-badge check">${icon('check')}</span>`;
+    return `<div class="chip">${badge}<span class="chip-label">${label}</span></div>`;
+  }).join('')}</div>`;
+}
+
+const SCREENS = {
+  home: {
+    crumb: "Início",
+    render: () => `
+      <div class="hero">
+        <div class="kicker">${icon('shield')} PLANCON Animais RJ</div>
+        <h2>Plano de Contingência para Animais</h2>
+        <p class="sub">Resumo prático do componente animal do PLANCON Estadual — cenários, mobilização e atribuições dos órgãos envolvidos.</p>
+      </div>
+      <div class="grid">
+        <div class="card home-card" onclick="nav('cenarios')">
+          <div class="icon">${icon('scenario')}</div>
+          <h3>Cenários</h3>
+          <p>Riscos e planos de ação por tipo de evento — impactos, preparação, gatilhos e resposta.</p>
+          <div class="go">Abrir ${icon('chevron')}</div>
+        </div>
+        <div class="card home-card orange" onclick="nav('mobilizacao')">
+          <div class="icon">${icon('mobil')}</div>
+          <h3>Mobilização</h3>
+          <p>Ativação, fluxo, níveis, dimensionamento do evento e estrutura do SCI.</p>
+          <div class="go">Abrir ${icon('chevron')}</div>
+        </div>
+        <div class="card home-card" onclick="nav('atribuicoes')">
+          <div class="icon">${icon('org')}</div>
+          <h3>Atribuições</h3>
+          <p>Responsabilidades de cada órgão participante na resposta ao componente animal.</p>
+          <div class="go">Abrir ${icon('chevron')}</div>
+        </div>
+      </div>
+    `
+  },
+
+  cenarios: {
+    crumb: "Cenários",
+    render: () => `
+      <div class="section-title">Cenários</div>
+      <p class="section-desc">Cada cenário reúne a descrição do risco, os impactos esperados sobre os animais, as ações de preparação, os gatilhos de ativação do GRAC Animal e as ações de resposta. Nesta versão preliminar, os Cenários 1 e 2 estão detalhados — os demais (3 a 8) serão incluídos conforme o conteúdo for finalizado.</p>
+      <div class="grid tight">
+        ${Object.keys(DATA.cenarios).sort((a,b)=>a-b).map(id => `
+          <div class="card ${CENARIOS_META[id].cardClass}" onclick="nav('cenario${id}')">
+            <div class="icon">${icon(CENARIOS_META[id].icon)}</div>
+            <h3>Cenário ${id} — ${DATA.cenarios[id].nome}</h3>
+            <p>Descrição, impactos, preparação, gatilhos e resposta.</p>
+            <div class="go">Ver cenário ${icon('chevron')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  },
+
+  mobilizacao: {
+    crumb: "Mobilização",
+    render: () => `
+      <div class="section-title">Mobilização</div>
+      <p class="section-desc">Regras de ativação, fluxo operacional, níveis de mobilização, dimensionamento do evento e estrutura do SCI para o componente animal.</p>
+      <div class="grid tight">
+        <div class="card" onclick="nav('mob-ativacao')">
+          <div class="icon">${icon('alert')}</div>
+          <h3>Ativação</h3>
+          <p>Quando o GRAC Animal pode ser ativado.</p>
+          <div class="go">Ver critérios ${icon('chevron')}</div>
+        </div>
+        <div class="card orange" onclick="nav('mob-fluxo')">
+          <div class="icon">${icon('flow')}</div>
+          <h3>Fluxo de ativação</h3>
+          <p>Do monitoramento ao emprego operacional.</p>
+          <div class="go">Ver fluxo ${icon('chevron')}</div>
+        </div>
+        <div class="card" onclick="nav('mob-niveis')">
+          <div class="icon">${icon('levels')}</div>
+          <h3>Níveis de mobilização</h3>
+          <p>De Normalidade (0) a Mobilização Total (3).</p>
+          <div class="go">Ver níveis ${icon('chevron')}</div>
+        </div>
+        <div class="card orange" onclick="nav('mob-dimensionamento')">
+          <div class="icon">${icon('clipboard')}</div>
+          <h3>Dimensionamento do evento</h3>
+          <p>Itens do levantamento inicial de danos animais.</p>
+          <div class="go">Ver checklist ${icon('chevron')}</div>
+        </div>
+        <div class="card" onclick="nav('mob-sci')">
+          <div class="icon">${icon('layers')}</div>
+          <h3>SCI integrado</h3>
+          <p>Estruturas do componente animal dentro do SCI.</p>
+          <div class="go">Ver estruturas ${icon('chevron')}</div>
+        </div>
+      </div>
+    `
+  },
+
+  "mob-ativacao": {
+    crumb: "Ativação",
+    render: () => `
+      <div class="section-title">Ativação</div>
+      <div class="panel">
+        <p style="font-weight:600;">${DATA.mobAtivacao.intro}</p>
+        <ol class="steps">${DATA.mobAtivacao.itens.map(t=>`<li>${t}</li>`).join('')}</ol>
+      </div>
+    `
+  },
+
+  "mob-dimensionamento": {
+    crumb: "Dimensionamento do evento",
+    render: () => `
+      <div class="section-title">Dimensionamento do evento — avaliação de danos animais</div>
+      <p class="section-desc">${DATA.mobDimensionamento.intro}</p>
+      <div class="panel">${chipList(DATA.mobDimensionamento.itens)}</div>
+    `
+  },
+
+  "mob-sci": {
+    crumb: "SCI integrado",
+    render: () => `
+      <div class="section-title">SCI integrado ao componente animal e demais setores</div>
+      <p class="section-desc">${DATA.mobSci.intro}</p>
+      <div class="panel">${chipList(DATA.mobSci.itens, {numbered:true})}</div>
+    `
+  },
+
+  "mob-fluxo": {
+    crumb: "Fluxo de ativação",
+    render: () => `
+      <div class="section-title">Fluxo de ativação</div>
+      <p class="section-desc">Sequência operacional, do monitoramento ao emprego das equipes em campo.</p>
+      <div class="panel">
+        <div class="flow">
+          ${DATA.mobFluxo.map((step,i)=>`
+            <div class="flow-step">
+              <div>
+                <div class="flow-num">${i+1}</div>
+                ${i < DATA.mobFluxo.length-1 ? '<div class="flow-line"></div>' : ''}
+              </div>
+              <div class="flow-body"><p>${step}</p></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `
+  },
+
+  "mob-niveis": {
+    crumb: "Níveis de mobilização",
+    render: () => `
+      <div class="section-title">Níveis de mobilização</div>
+      <p class="section-desc">Quatro níveis progressivos, de acordo com a magnitude do impacto sobre os animais.</p>
+      <div class="grid tight">
+        ${[0,1,2,3].map(n=>`
+          <div class="card lvl-card" data-lvl="${n}" onclick="nav('mob-nivel${n}')">
+            <span class="lvl-pill" data-lvl="${n}">NÍVEL ${n}</span>
+            <h3>${DATA.niveis[n].nome.replace(/^NÍVEL \d+ — /,'')}</h3>
+            <p>${DATA.niveis[n].resumo}</p>
+            <div class="go">Ver ações ${icon('chevron')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  },
+
+  "mob-nivel0": { crumb: "Nível 0", render: () => nivelScreen(0) },
+  "mob-nivel1": { crumb: "Nível 1", render: () => nivelScreen(1) },
+  "mob-nivel2": { crumb: "Nível 2", render: () => nivelScreen(2) },
+  "mob-nivel3": { crumb: "Nível 3", render: () => nivelScreen(3) },
+
+  atribuicoes: {
+    crumb: "Atribuições",
+    render: () => `
+      <div class="section-title">Atribuições</div>
+      <div class="panel">
+        <p>${DATA.atribIntro.lead}</p>
+        <p style="font-weight:600; margin-top:14px;">${DATA.atribIntro.subLead}</p>
+        ${bullets(DATA.atribIntro.bullets)}
+      </div>
+      <p class="section-desc" style="margin-top:22px;">Atribuições por órgão participante do GRAC Animal.</p>
+      <div class="grid tight">
+        ${Object.keys(ORGS_META).map(slug => `
+          <div class="card ${ORGS_META[slug].cardClass}" onclick="nav('atrib-${slug}')">
+            <div class="icon">${icon(ORGS_META[slug].icon)}</div>
+            <h3>${DATA.orgs[slug].short}</h3>
+            <div class="go">Ver competências ${icon('chevron')}</div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  }
+};
+
+function nivelScreen(n){
+  const d = DATA.niveis[n];
+  return `
+    <div class="section-title">Níveis de mobilização</div>
+    <div class="lvl-banner" data-lvl="${n}">
+      <span class="lvl-pill" data-lvl="${n}">NÍVEL ${n}</span>
+      <h3>${d.nome.replace(/^NÍVEL \d+ — /,'')}</h3>
+      <p>${d.resumo}</p>
+    </div>
+    <div class="panel">
+      <h4>Ações</h4>
+      ${bullets(d.acoes)}
+    </div>
+  `;
+}
+
+/* ---------- Geração dinâmica das telas de Cenário e de Órgão (1 aba = 1 tela) ---------- */
+Object.keys(DATA.cenarios).forEach(id => {
+  const d = DATA.cenarios[id];
+
+  SCREENS[`cenario${id}`] = {
+    crumb: `Cenário ${id}`,
+    render: () => `
+      <div class="section-title">${d.titulo}</div>
+      <div class="panel">
+        <h4>Descrição</h4>
+        <p>${d.descricao}</p>
+      </div>
+      <div class="grid tight">
+        <div class="card" onclick="nav('cenario${id}-impactos')">
+          <div class="icon">${icon('alert')}</div>
+          <h3>Impactos esperados</h3>
+          <div class="go">Ver lista ${icon('chevron')}</div>
+        </div>
+        <div class="card" onclick="nav('cenario${id}-prepara')">
+          <div class="icon">${icon('shield')}</div>
+          <h3>Ações de preparação</h3>
+          <div class="go">Ver lista ${icon('chevron')}</div>
+        </div>
+        <div class="card orange" onclick="nav('cenario${id}-gatilhos')">
+          <div class="icon">${icon('alert')}</div>
+          <h3>Gatilhos de ativação</h3>
+          <div class="go">Ver lista ${icon('chevron')}</div>
+        </div>
+        <div class="card orange" onclick="nav('cenario${id}-resposta')">
+          <div class="icon">${icon('mobil')}</div>
+          <h3>Ações de resposta</h3>
+          <div class="go">Ver lista ${icon('chevron')}</div>
+        </div>
+      </div>
+    `
+  };
+
+  SCREENS[`cenario${id}-impactos`] = {
+    crumb: "Impactos esperados",
+    render: () => `
+      <div class="section-title">Impactos esperados</div>
+      <p class="section-desc">${d.titulo}</p>
+      <div class="panel">${bullets(d.impactos)}</div>
+    `
+  };
+  SCREENS[`cenario${id}-prepara`] = {
+    crumb: "Ações de preparação",
+    render: () => `
+      <div class="section-title">Ações de preparação</div>
+      <p class="section-desc">${d.titulo}</p>
+      <div class="panel">${bullets(d.prepara)}</div>
+    `
+  };
+  SCREENS[`cenario${id}-gatilhos`] = {
+    crumb: "Gatilhos de ativação",
+    render: () => `
+      <div class="section-title">Gatilhos de ativação</div>
+      <p class="section-desc">${d.titulo}</p>
+      <div class="panel">
+        ${d.gatilhosIntro ? `<p style="font-weight:600;">${d.gatilhosIntro}</p>` : ''}
+        ${bullets(d.gatilhos)}
+      </div>
+    `
+  };
+  SCREENS[`cenario${id}-resposta`] = {
+    crumb: "Ações de resposta",
+    render: () => `
+      <div class="section-title">Ações de resposta</div>
+      <p class="section-desc">${d.titulo}</p>
+      <div class="panel">${bullets(d.resposta)}</div>
+    `
+  };
+});
+
+Object.keys(DATA.orgs).forEach(slug => {
+  const d = DATA.orgs[slug];
+  SCREENS[`atrib-${slug}`] = {
+    crumb: d.short,
+    render: () => `
+      <div class="section-title">${d.org}</div>
+      <div class="panel">
+        ${d.intro ? `<p>${d.intro}</p>` : ''}
+        ${d.heading ? `<h4>${d.heading}</h4>` : ''}
+        ${bullets(d.bullets)}
+      </div>
+    `
+  };
+});
+
+/* ---------- Navegação ---------- */
+function nav(id){
+  stack.push(id);
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function goBack(){
+  if(stack.length > 1){
+    stack.pop();
+    render();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+function goTo(index){
+  stack = stack.slice(0, index+1);
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function render(){
+  const current = stack[stack.length-1];
+  document.getElementById('main').innerHTML = `<div class="screen active">${SCREENS[current].render()}</div>`;
+  document.getElementById('backBtn').disabled = stack.length <= 1;
+  const bc = document.getElementById('breadcrumb');
+  bc.innerHTML = stack.map((id,i)=>{
+    const last = i === stack.length-1;
+    return `${i>0?'<span class="sep">/</span>':''}<span class="crumb ${last?'current':''}" ${last?'':`onclick="goTo(${i})"`}>${SCREENS[id].crumb}</span>`;
+  }).join('');
+}
+render();
+</script>
+</body>
+</html>
